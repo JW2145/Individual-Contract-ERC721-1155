@@ -23,18 +23,18 @@ contract Group{
 
     // IERC20 public dai;
     // ERC20 public coin;
-    // ITN public itn;
+    ITN public itn;
     // Token721 public test;
     Token721 public koin;
     Token1155 public coin1155;
 
-    constructor(address _tokenContract721, address _tokenContract1155) public{
+    constructor(address _tokenContract721, address _tokenContract1155, address _tokenContract20) public{
         contractCreation = block.timestamp;
         owner = msg.sender;
         koin = Token721(_tokenContract721);
         coin1155 = Token1155(_tokenContract1155);
         // coin = ERC20(_tokenContract);
-        // itn = ITN(_tokenContract);
+        itn = ITN(_tokenContract20);
     }
 
     modifier onlyOwner(address _user) {
@@ -67,15 +67,19 @@ contract Group{
     mapping(uint256 => Anggota) internal idToAnggota;
     mapping(uint => bool) internal idToAnggotaCheck;
 
-    function testingOnly() public{
+    function testing115() public{
         // koin.mintItem(msg.sender);
         coin1155.mintERC1155(msg.sender);
     }
 
-    function get721()
+   
 
-    function testCoin(uint idx) public{
-        koin.testingToken(msg.sender,idx);
+    function get721() view public returns(uint){
+        return koin.totalSupply();
+    }
+
+    function testCoin() public{
+        koin.mintItem(msg.sender);
     }
 
     //Kasih badge ke anggota secara manual
@@ -95,8 +99,9 @@ contract Group{
         // itn.approving(msg.sender,1);
         // address __sender = msg.sender;
         // address contractaddress = address(this);
-        // itn.transferFrom(msg.sender,address(this),1);//pay to create a member
-        // koin.mintItem(msg.sender);
+        itn.transferFrom(msg.sender,address(this),1);//pay to create a member
+        koin.mintItem(msg.sender);
+        
         uint256 _created = block.timestamp;
         Anggota anggota = new Anggota(
             id,
